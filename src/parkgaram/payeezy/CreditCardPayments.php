@@ -9,14 +9,19 @@ class CreditCardPayments extends PayeezyApi implements ICreditCardPayments {
 	}
 
 	public function authorize($payload){
-
+		#code ....
 	}
 
+	/**
+	 * summary
+	 *
+	 * @return string response from payeezy api
+	 * @author garam
+	 */
 	public function purchase($payload){
 		$this->uri = PayeezyApi::$URI_SANDBOX.'/transactions';
-		// echo $this->uri.'highlight_file(filename)';
 		$payload = array_merge([
-			"merchant_ref" => '',
+			  "merchant_ref" => '',
 			  "transaction_type" => 'purchase',
 			  "method" => 'credit_card',
 			  "amount" => '',
@@ -31,13 +36,10 @@ class CreditCardPayments extends PayeezyApi implements ICreditCardPayments {
 			  ]
 			],$payload);
 		
-		$data = json_encode($payload, JSON_FORCE_OBJECT);
-
-		$headers = parent::hmac($data);
-		return parent::post($data,$headers);
+		return parent::request($payload);
 	}
 
 	public function splitTender($payload){
-		
+		#code ....
 	}
 }

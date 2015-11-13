@@ -4,32 +4,24 @@
 */
 use Parkgaram\Payeezy\PayeezyApi;
 use Parkgaram\Payeezy\CreditCardPayments as CardPayments;
+use Parkgaram\Payeezy\TokenizeCreditCards;
 
 class PayeezyTest extends PHPUnit_Framework_TestCase
 {
-	
-	// public function testhelloTest()
- //    {
- //    	$api = new PayeezyApi('1','2');
- //    	$this->assertEquals($api->getApiKey(),'1');
- //    	$this->assertEquals($api->getApiSecret(),'2');
-
- //        $creditCartPayments->authorize();
- //    }
     
-  //   public function testCurl()
-  //   {
-  //   	$curl = new Curl\Curl();
-		// $curl->get('http://httpbin.org/get');
-
-		// var_dump($curl->request_headers);
-		// var_dump($curl->response_headers);
-  //   }
-
-    public function testCardPayments($value='')
+    protected $apiKey        = '';
+    protected $apiSecret     = '';
+    protected $merchantToken = '';
+    
+    /**
+     * @test
+     */
+    public function cardPayments($value='')
     {
         $cardApi = new CardPayments(
-            );
+          $this->apiKey,
+          $this->apiSecret,
+          $this->merchantToken);
 
         $payload = [
               "merchant_ref" => PayeezyApi::processInput('adf'),
@@ -47,7 +39,35 @@ class PayeezyTest extends PHPUnit_Framework_TestCase
               ]
         ];
         
+        var_dump($payload);
         $response = $cardApi->purchase($payload);
+        var_dump($response);
+    }
+
+    /**
+     * @test
+     */
+    public function createToken()
+    {
+      $api = new TokenizeCreditCards(
+        $this->apiKey,
+        $this->apiSecret,
+        $this->merchantToken);
+
+      $payload = [
+        "type" => PayeezyApi::processInput('FDToken'),
+        "auth" => PayeezyApi::processInput('false'),
+        "ta_token" => PayeezyApi::processInput('NOIW'),
+        "credit_card" => [
+          "type" => PayeezyApi::processInput('visa'),
+          "cardholder_name" => PayeezyApi::processInput('John Smith'),
+          "card_number" => PayeezyApi::processInput('4788250000028291'),
+          "exp_date" => PayeezyApi::processInput('1020'),
+          "cvv" => PayeezyApi::processInput('123'),
+        ]
+      ];
+        var_dump($payload);
+        $response = $api->create($payload);
         var_dump($response);
     }
 }

@@ -19,6 +19,15 @@ class PayeezyApi {
 		$this->merchantToken = $merchantToken;
 	}
 
+	/**
+	 * @param string $uri
+	 */
+	public function setUri($uri)
+	{
+	    $this->uri = $uri;
+	    return $this;
+	}
+
 	public static function processInput($data) {
         $data = trim($data);
         $data = stripslashes($data);
@@ -38,41 +47,29 @@ class PayeezyApi {
 		return $this->merchantToken;
 	}
 
-	public function post($payload,$headers)
+	protected function post($json,$headers)
 	{
 		$curl = new Curl();
-
-		// $curl->setopt(CURLOPT_RETURNTRANSFER, true);
-		// $curl->setopt(CURLOPT_HEADER, fals);
-
 		$curl->setHeader('Content-Type','application/json');
 		$curl->setHeader('apikey',strval($this->apiKey));
 		$curl->setHeader('token',strval($this->merchantToken));
 		$curl->setHeader('Authorization',$headers['authorization']);
 		$curl->setHeader('nonce',$headers['nonce']);
 		$curl->setHeader('timestamp',$headers['timestamp']);
+    	$curl->post($this->uri,$json);
     	
-    	$curl->post($this->uri,$payload);
-    	
-    	// print_r($curl);
-    	// echo '-----request-----';
-    	// var_dump($curl->request_headers);
-    	// var_dump($curl->request_headers);
-		// echo '-----response-----';
-        // var_dump($curl->response_headers);
-        // var_dump($curl->response);
     	$curl->close();
 
     	return $curl->response;
 	}
 
-	public function hmac($payload)
+	protected function hmac($json)
 	{
 		$nonce = strval(hexdec(bin2hex(openssl_random_pseudo_bytes(4, $cstrong))));
 	    $timestamp = strval(time()*1000); //time stamp in milli seconds
 	    
 	    $data = 
-	    	$this->apiKey . $nonce . $timestamp . $this->merchantToken . $payload;
+	    	$this->apiKey . $nonce . $timestamp . $this->merchantToken . $json;
 
 	    $hashAlgorithm = "sha256";
 	    $hmac = hash_hmac ($hashAlgorithm , $data , $this->apiSecret, false );    // HMAC Hash in hex
@@ -82,6 +79,16 @@ class PayeezyApi {
 	            'nonce' => $nonce,
 	            'timestamp' => $timestamp,
 	           ]; 
+	}
+
+	protected function request($payload)
+	{	
+		//payload to json
+		$json = json_encode($payload, JSON_FORCE_OBJECT);
+		//make header
+		$headers = $this->hmac($json);
+		//request post
+		return $this->post($json,$headers);
 	}
 
 }
