@@ -1,12 +1,15 @@
-<?php
+<?php namespace Parkgaram\Payeezy\Providers;
 
-namespace Parkgaram\Payeezy\Providers;
-
-use Riak\Connection;
 use Illuminate\Support\ServiceProvider;
 
-class RiakServiceProvider extends ServiceProvider
+class PayeezyApiProvider extends ServiceProvider
 {
+
+    public function boot()
+    {
+        #code ...
+    }
+
     /**
      * Register bindings in the container.
      *
@@ -14,8 +17,6 @@ class RiakServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('Riak\Contracts\Connection', function ($app) {
-            return new Connection(config('riak'));
-        });
+        #code ...
     }
 }
