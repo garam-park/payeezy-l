@@ -1,6 +1,6 @@
-<?php namespace Parkgaram\Payeezy;
+<?php namespace Parkgaram\Payeezy\Apis;
 
-use Parkgaram\Payeezy\Method\ITokenizeCreditCards;
+use Parkgaram\Payeezy\Methods\ITokenizeCreditCards;
 
 class TokenizeCreditCards extends PayeezyApi implements ITokenizeCreditCards 
 {

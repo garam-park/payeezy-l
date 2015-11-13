@@ -2,9 +2,9 @@
 /**
 * 
 */
-use Parkgaram\Payeezy\PayeezyApi;
-use Parkgaram\Payeezy\CreditCardPayments as CardPayments;
-use Parkgaram\Payeezy\TokenizeCreditCards;
+use Parkgaram\Payeezy\Apis\PayeezyApi;
+use Parkgaram\Payeezy\Apis\CreditCardPayments as CardPayments;
+use Parkgaram\Payeezy\Apis\TokenizeCreditCards;
 
 class PayeezyTest extends PHPUnit_Framework_TestCase
 {

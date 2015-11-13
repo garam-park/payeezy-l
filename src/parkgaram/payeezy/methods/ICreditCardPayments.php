@@ -1,4 +1,4 @@
-<?php namespace Parkgaram\Payeezy\Method;
+<?php namespace Parkgaram\Payeezy\Methods;
 
 /**
  * uri https://developer.payeezy.com/creditcardpayment/apis/post/transactions

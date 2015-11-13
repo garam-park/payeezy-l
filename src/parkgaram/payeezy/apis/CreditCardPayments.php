@@ -1,6 +1,6 @@
-<?php namespace Parkgaram\Payeezy;
+<?php namespace Parkgaram\Payeezy\Apis;
 
-use Parkgaram\Payeezy\Method\ICreditCardPayments;
+use Parkgaram\Payeezy\Methods\ICreditCardPayments;
 
 class CreditCardPayments extends PayeezyApi implements ICreditCardPayments {
 	

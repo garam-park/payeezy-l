@@ -1,4 +1,4 @@
-<?php namespace Parkgaram\Payeezy;
+<?php namespace Parkgaram\Payeezy\Apis;
 
 use Curl\Curl;
 
