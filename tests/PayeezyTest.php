@@ -5,13 +5,14 @@
 use Parkgaram\Payeezy\Apis\PayeezyApi;
 use Parkgaram\Payeezy\Apis\CreditCardPayments as CardPayments;
 use Parkgaram\Payeezy\Apis\TokenizeCreditCards;
+use Parkgaram\Payeezy\Apis\TokenBasedPayments;
 
 class PayeezyTest extends PHPUnit_Framework_TestCase
 {
     
-    protected $apiKey        = '';
-    protected $apiSecret     = '';
-    protected $merchantToken = '';
+    protected $apiKey        = 'G2hk6Rf0wnHXo3bHBP1LKXL1uOtZp5Vm';
+    protected $apiSecret     = '5ef458ab58dbb62693f0de958802e37e29df7d674092489c5d833987a5c8e937';
+    protected $merchantToken = 'fdoa-a480ce8951daa73262734cf102641994c1e55e7cdf4c02b6';
     
     /**
      * @test
@@ -39,15 +40,18 @@ class PayeezyTest extends PHPUnit_Framework_TestCase
               ]
         ];
         
-        var_dump($payload);
         $response = $cardApi->purchase($payload);
-        var_dump($response);
+        $decodedResp = json_decode($response, true);
+
+        $this->assertEqualsStep($decodedResp);
+
+
     }
 
     /**
      * @test
      */
-    public function createToken()
+    public function createAndPaymentsWithToken()
     {
       $api = new TokenizeCreditCards(
         $this->apiKey,
@@ -66,8 +70,51 @@ class PayeezyTest extends PHPUnit_Framework_TestCase
           "cvv" => PayeezyApi::processInput('123'),
         ]
       ];
-        var_dump($payload);
-        $response = $api->create($payload);
-        var_dump($response);
+      
+      $response = $api->create($payload);
+      $decodedResp = json_decode($response, true);
+
+      // $this->assertEqualsStep($decodedResp);
+
+      $api = new TokenBasedPayments(
+        $this->apiKey,
+        $this->apiSecret,
+        $this->merchantToken);
+
+
+      $payload = [
+        'merchant_ref' =>  'TEST ref 110',
+        'transaction_type'=>  'authorize',
+        'method' =>  'token',
+        'amount' =>  '1',
+        'currency_code' =>  'USD',
+        'token' => [
+          'token_type' => 'FDToken',
+          'token_data' => [
+            'type' =>  $decodedResp['token']['type'],
+            'value' =>  $decodedResp['token']['value'],
+            'cardholder_name' => $decodedResp['token']['cardholder_name'],
+            'exp_date' => $decodedResp['token']['exp_date'],
+        ]]];
+
+      $response = $api->authorize($payload);
+      $decodedResp = json_decode($response, true);
+      
+      $this->assertEqualsStep($decodedResp);
+    }
+
+
+    private function assertEqualsStep($arr = [])
+    {
+      $this->assertEquals(
+        'approved', 
+        $arr['transaction_status']
+      );//$this->assertEquals(
+
+      // "validation_status":"success",
+      $this->assertEquals(
+        'success', 
+        $arr['validation_status']
+      );//$this->assertEquals(
     }
 }
