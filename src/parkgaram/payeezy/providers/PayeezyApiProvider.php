@@ -1,6 +1,7 @@
 <?php namespace Parkgaram\Payeezy\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Parkgaram\Payeezy\Apis\CreditCardPayments as CardPayments;
 
 class PayeezyApiProvider extends ServiceProvider
 {
@@ -17,6 +18,17 @@ class PayeezyApiProvider extends ServiceProvider
      */
     public function register()
     {
-        #code ...
+        $this->app['payeezy.credit.payment'] = 
+        $this->app->share(function ($app)
+        {   
+            $apiKey        = new config('payeezy.apikey' , '');
+            $apiSecret     = new config('payeezy.apisecret', '');
+            $merchantToken = new config('payeezy.merchantToken', '');
+
+            return new CardPayments(
+                          $this->apiKey,
+                          $this->apiSecret,
+                          $this->merchantToken);
+        });
     }
 }

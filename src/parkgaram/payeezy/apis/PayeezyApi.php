@@ -47,7 +47,7 @@ class PayeezyApi {
 		return $this->merchantToken;
 	}
 
-	protected function post($json,$headers)
+	private function post($json,$headers)
 	{
 		$curl = new Curl();
 		$curl->setHeader('Content-Type','application/json');
